@@ -22,7 +22,7 @@ pip3 install -r requirements.txt
 
 ### 3. Decompile APK
 
-You can use jadx [https://github.com/skylot/jadx](https://github.com/skylot/jadx) for that.
+Get the APK of the intended app. And You can use jadx [https://github.com/skylot/jadx](https://github.com/skylot/jadx) to decompile.
 It will create a "resources" and "sources" directory. "Sources" directory is where the decompiled .java files sit.
 
 `jadx androidapp.apk`
@@ -37,13 +37,13 @@ b. `python3 script.py --llm_model gemini-1.5-flash -output_dir /tmp/ver/ -source
 
 where, 
 
--llm_model is the LLM model to use, Currently only Google's Gemini is supported.
+-llm_model is the LLM model to use, Currently only Google's Gemini is supported. You can get the model variants from here. https://ai.google.dev/gemini-api/docs/models/gemini#model-variations
 
--output is the output directory you want to save generated files.
+-output_dir is the output directory you want to save generated files.
 
 -source_dir is the source directory for the decompiled code. You can send more than one directory separated by space as above.
 
--save_code (optional) set as True will deobfuscate the code and save in the output directory provided, otherwise only vuln_report file will be generated.
+-save_code (_optional_) if set as True, it will deobfuscate the code and save in the output directory provided, otherwise only vuln_report file will be generated.
 
 **Important - Don't send the entire package at once which would contain libraries etc. Otherwise It may take forever to scan. Send the specific directories as input which contains app specific code.**
 
