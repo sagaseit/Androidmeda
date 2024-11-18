@@ -1,6 +1,6 @@
 # Deobfuscate Android App
 
-LLM tool to deobfuscate android app code and also find any potential vulnerabilities. Uses Google's Gemini public API.
+LLM tool to deobfuscate android app code and find any potential vulnerabilities. Uses Google's Gemini public API.
 
 ## Description
 
@@ -22,25 +22,27 @@ pip3 install -r requirements.txt
 
 ### 3. Decompile APK
 
-You can use jadx https://github.com/skylot/jadx for that.
+You can use jadx [https://github.com/skylot/jadx](https://github.com/skylot/jadx) for that.
 It will create a resources and sources directory. Sources directory is where the decompiled .java files sit.
 
-jadx test.apk
+jadx androidapp.apk
 
 ### 4. Run the script 
 
 a. EXPORT API_KEY= "Your Gemini API Key" 
 
-You can get the API key from ai.google.dev
+You can get the API key from [ai.google.dev](https://ai.google.dev/)
 
 b. python3 script.py --llm_model gemini-1.5-flash -output_dir /tmp/ver/ -source_dir "input_dir1/ input_dir2/" -thread_size 10
 
 where, 
 -llm_model is the LLM model to use, Currently only Google's Gemini is supported.
+
 -output is the output directory you want to save generated files.
+
 -source_dir is the source directory for the decompiled code
+
 -save_code (optional) set as True will deobfuscate the code and save in the output directory provided, otherwise only vuln_report file will be generated.
--thread (optional) for parallel execution of multiple files. Default 1.
 
 **Important - Don't send the entire package at once which would contain libraries etc. Otherwise It may take forever to scan. Send the specific directories as input which contains app specific code.**
 
