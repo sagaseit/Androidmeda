@@ -1,6 +1,10 @@
 # Deobfuscate Android App
 
-LLM tool to find any potential vulnerabilities and deobfuscate android app code. Uses Google's Gemini public API.
+LLM tool to find any potential vulnerabilities and deobfuscate android app code. Uses Google's Gemini public API. 
+
+Android apps generally use Proguard for obfuscating the app and reversing app can be hard with meaning less variable and function names. LLMs seems
+
+to do a good job in understanding the context of the code and renaming variables, functions, adding comments etc.
 
 ## Description
 
@@ -8,9 +12,9 @@ Input - Takes decompiled code directory as an input.
 
 Output -
 
-1) a JSON file will be created with name "vuln_report", listing security risk and its impact.
+1) a JSON file will be created with name "vuln_report", listing security risk and its impact in the provided output directory.
 
-2) Deobfuscates the files for easier readability and save it in package directory structure for manual reviews.
+2) Deobfuscates each file for easier readability and save it in package directory structure for manual reviews. Also, labels any security issues seen in the generated code with #SECURITY-ISSUE. (Only when save_code parameter is set to True, read below)
 
 ## Installation
 
@@ -43,9 +47,9 @@ where,
 
 -source_dir is the source directory for the decompiled code. You can send more than one directory separated by space as above.
 
--save_code (_optional_) if set as True, it will deobfuscate the code and save in the output directory provided, otherwise only vuln_report file will be generated.
+-save_code (_optional_) Default is false. if set as True, it will deobfuscate the code and save in the output directory provided, otherwise only vuln_report file will be generated.
 
-**Important - Don't send the entire package at once which would contain libraries etc. Otherwise It may take forever to scan. Send the specific directories as input which contains app specific code.**
+**Important - Don't send the entire package at once which would contain libraries etc. Otherwise It may take forever to scan. Send the specific directories as input which contains app specific code. For example - if package directory looks like com/google/android/yourapp, send com/google/android/yourapp/receivers/**
 
 ## Contributing
 
