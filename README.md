@@ -2,9 +2,7 @@
 
 LLM tool to find any potential vulnerabilities and deobfuscate android app code. Uses Google's Gemini public API. 
 
-Android apps generally use Proguard for obfuscating the app and reversing app can be hard with meaning less variable and function names. LLMs seems
-
-to do a good job in understanding the context of the code and renaming variables, functions, adding comments etc.
+Android apps generally use Proguard for obfuscating the app and reversing app can be hard with meaning less variable and function names. LLMs seems to do a good job in understanding the context of the code and renaming variables, functions, adding comments etc.
 
 ## Description
 
