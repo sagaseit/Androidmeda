@@ -146,10 +146,10 @@ async def main(argv: Sequence[str]) -> None:
         raise app.UsageError(
             f'Usage: {argv[0]} -llm_model=<LLM Model to use> -output_dir=<output directory> -source_dir=<source directory>'
         )
-    if os.environ['API_KEY'] is None:
-        raise app.UsageError(f'Usage: Set api_key in the environ variable')
+    if os.environ['GEMINI_API_KEY'] is None:
+        raise app.UsageError(f'Usage: Set gemini_api_key in the environ variable')
 
-    genai.configure(api_key=os.environ['API_KEY'])
+    genai.configure(api_key=os.environ['GEMINI_API_KEY'])
 
     semaphore = asyncio.Semaphore(_THREAD_SIZE.value)
     
