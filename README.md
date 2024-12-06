@@ -49,6 +49,21 @@ where,
 
 **Important - Don't send the entire package at once which would contain libraries etc. Otherwise It may take forever to scan. Send the specific directories as input which contains app specific code. For example - if package directory looks like com/google/android/yourapp, send com/google/android/yourapp/receivers/**
 
+## Demo
+
+Decompiled code (Obfuscated)
+
+![Screenshot 2024-12-06 at 10 01 19 AM](https://github.com/user-attachments/assets/1908bbd7-3354-4fcc-adbb-64dee857ae2d)
+
+Decompiled code (After processing with LLM)
+
+![Screenshot 2024-12-06 at 9 59 14 AM](https://github.com/user-attachments/assets/a9c8d34d-3a24-4f64-819a-b908a8dc815f)
+
+Security Issues identified by LLM
+
+![Screenshot 2024-12-06 at 10 20 46 AM](https://github.com/user-attachments/assets/bba67dd9-69e8-4323-b696-203a232a33cd)
+
+
 ## Contributing
 
 See [`CONTRIBUTING.md`](docs/CONTRIBUTING.md) for details.
