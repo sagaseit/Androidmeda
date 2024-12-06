@@ -122,7 +122,7 @@ async def process_code_files(semaphore, file_path):
             response =  await send_code_to_gemini(client,content)
 
             # Process the response as needed and create a vuln file
-            print(response)
+            #print(response)
             process_response(response,file_path,_OUTPUT_DIR.value)
         except Exception as e:
             print(f"Error processing file {file_path}: {e}")
@@ -159,7 +159,7 @@ async def main(argv: Sequence[str]) -> None:
     code_files = []
     for source_dirs in _SOURCE_DIR.value:
         code_files = code_files + find_java_files(source_dirs)
-        print(code_files)
+        #print(code_files)
 
     #Read the prompt
     with open("prompt.txt", 'r',encoding="utf-8") as file:
