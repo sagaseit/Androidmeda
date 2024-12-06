@@ -31,7 +31,7 @@ It will create a "resources" and "sources" directory. "Sources" directory is whe
 
 ### 4. Run the script 
 
-a. `EXPORT API_KEY= "Your Gemini API Key"`
+a. `EXPORT GEMINI_API_KEY= "Your Gemini API Key"`
 
 You can get the API key from [ai.google.dev](https://ai.google.dev/)
 
