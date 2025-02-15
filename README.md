@@ -31,11 +31,19 @@ It will create a "resources" and "sources" directory. "Sources" directory is whe
 
 ### 4. Run the script 
 
-a. `EXPORT GEMINI_API_KEY= "Your Gemini API Key"`
+a. Using Google's Gemini LLM Models.
+
+`EXPORT GEMINI_API_KEY= "Your Gemini API Key"`
 
 You can get the API key from [ai.google.dev](https://ai.google.dev/)
 
-b. `python3 script.py --llm_model gemini-1.5-flash -output_dir /tmp/ver/ -source_dir "input_dir1/ input_dir2/"`
+**OR**
+
+Using Ollama open source models to run locally.
+
+Follow steps here to download and run the model locally [github.com/ollama/ollama](https://github.com/ollama/ollama) 
+
+b. Run - `python3 script.py --llm_model gemini-1.5-flash -output_dir /tmp/ver/ -source_dir "input_dir1/ input_dir2/"`
 
 where, 
 
