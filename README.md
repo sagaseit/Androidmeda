@@ -18,6 +18,8 @@ Output -
 
 ### 1. Clone the repo
 
+git clone https://github.com/In3tinct/deobfuscate-android-app.git
+
 ### 2. Install dependencies 
 
 pip3 install -r requirements.txt
