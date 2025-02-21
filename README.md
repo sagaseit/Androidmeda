@@ -73,6 +73,19 @@ Security Issues identified by LLM
 
 ![Screenshot 2024-12-06 at 10 20 46 AM](https://github.com/user-attachments/assets/bba67dd9-69e8-4323-b696-203a232a33cd)
 
+## Citation
+Please cite, If you use this software in your Research papers, articles etc.
+
+```
+@software{Agrawal_Deobfuscate-android-app_Android_app_2024,
+author = {Agrawal, Vaibhav},
+month = nov,
+title = {{Deobfuscate-android-app: Android app Vulnerability Scanner and Deobfuscator using LLM}},
+url = {https://github.com/In3tinct/deobfuscate-android-app},
+version = {1.0.0},
+year = {2024}
+}
+```
 
 ## Contributing
 
