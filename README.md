@@ -18,7 +18,7 @@ Output -
 
 ### 1. Clone the repo
 
-git clone https://github.com/In3tinct/deobfuscate-android-app.git
+git clone [https://github.com/In3tinct/deobfuscate-android-app.git](https://github.com/In3tinct/Deobfuscate-android-app.git)
 
 ### 2. Install dependencies 
 
