@@ -33,7 +33,7 @@ It will create a "resources" and "sources" directory. "Sources" directory is whe
 
 ### 4. Run the script 
 
-a. Using Google's Gemini LLM Models.
+**a. Using Google's Gemini LLM Models.**
 
 `EXPORT GEMINI_API_KEY= "Your Gemini API Key"`
 
@@ -41,21 +41,23 @@ You can get the API key from [ai.google.dev](https://ai.google.dev/)
 
 **OR**
 
-Using Ollama open source models to run locally.
+**b. Using Ollama open source models to run locally.**
 
 Follow steps here to download and run the model locally [github.com/ollama/ollama](https://github.com/ollama/ollama) 
 
-b. Run - `python3 script.py --llm_model gemini-1.5-flash -output_dir /tmp/ver/ -source_dir "input_dir1/ input_dir2/"`
+To Run, 
 
-where, 
+`python3 script.py --llm_model gemini-1.5-flash -output_dir /tmp/ver/ -source_dir "input_dir1/ input_dir2/"`
 
--llm_model is the LLM model to use, Currently only Google's Gemini is supported. You can get the model variants from here. https://ai.google.dev/gemini-api/docs/models/gemini#model-variations
+**Parameters -** 
 
--output_dir is the output directory you want to save generated files.
+*-llm_model* is the LLM model to use, Currently only Google's Gemini is supported. You can get the model variants from here. https://ai.google.dev/gemini-api/docs/models/gemini#model-variations
 
--source_dir is the source directory for the decompiled code. You can send more than one directory separated by space as above.
+*-output_dir* is the output directory you want to save generated files.
 
--save_code (*optional*) Default is false. if set as True, it will deobfuscate the code and save in the output directory provided, otherwise only vuln_report file will be generated.
+*-source_dir* is the source directory for the decompiled code. You can send more than one directory separated by space as above.
+
+*-save_code* (optional) Default is false. if set as True, it will deobfuscate the code and save in the output directory provided, otherwise only vuln_report file will be generated.
 
 **Important - Don't send the entire package at once which would contain libraries etc. Otherwise It may take forever to scan. Send the specific directories as input which contains app specific code. For example - if package directory looks like com/google/android/yourapp, send com/google/android/yourapp/receivers/**
 
