@@ -1,6 +1,6 @@
 # Deobfuscate Android App
 
-LLM tool to find any potential security vulnerabilities in android apps and deobfuscate android app code. Uses Google's Gemini public API. 
+LLM tool to find any potential security vulnerabilities in android apps and deobfuscate android app code. Supports Ollama models, as well as Google's Gemini public API. 
 
 Android apps generally use Proguard for obfuscating the app and reversing app can be hard with meaning less variable and function names. LLMs seems to do a good job in understanding the context of the code and renaming variables, functions, adding comments etc (to certain extent but embrace the unpredictibility of it too).
 
