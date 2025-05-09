@@ -65,7 +65,7 @@ To Run,
 
 Decompiled code (Obfuscated)
 
-![Screenshot 2024-12-06 at 10 01 19 AM](https://github.com/user-attachments/assets/1908bbd7-3354-4fcc-adbb-64dee857ae2d)
+![Screenshot 2024-12-06 at 10 01 19 AM](https://github.com/user-attachments/assets/37cd1454-6187-4027-8b34-1546fc9921b9)
 
 Decompiled code (After processing with LLM)
 
