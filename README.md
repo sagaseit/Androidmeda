@@ -47,7 +47,7 @@ Follow steps here to download and run the model locally [github.com/ollama/ollam
 
 To Run, 
 
-`python3 script.py --llm_model gemini-1.5-flash -output_dir /tmp/ver/ -source_dir "input_dir1/ input_dir2/"`
+`python3 androidmeda.py --llm_model gemini-1.5-flash -output_dir /tmp/ver/ -source_dir "input_dir1/ input_dir2/"`
 
 **Parameters -** 
 
