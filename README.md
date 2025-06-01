@@ -49,6 +49,10 @@ To Run,
 
 `python3 androidmeda.py --llm_model gemini-1.5-flash -output_dir /tmp/ver/ -source_dir "input_dir1/ input_dir2/"`
 
+OR (For ollama models)
+
+`python3 androidmeda.py --llm_model llama3.2 -output_dir /tmp/ver/ -source_dir "input_dir1/ input_dir2/"`
+
 **Parameters -** 
 
 *-llm_model* is the LLM model to use, Currently only Google's Gemini is supported. You can get the model variants from here. https://ai.google.dev/gemini-api/docs/models/gemini#model-variations
