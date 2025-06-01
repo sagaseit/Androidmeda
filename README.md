@@ -39,17 +39,17 @@ It will create a "resources" and "sources" directory. "Sources" directory is whe
 
 You can get the API key from [ai.google.dev](https://ai.google.dev/)
 
+To Run script, 
+
+`python3 androidmeda.py --llm_model gemini-1.5-flash -output_dir /tmp/ver/ -source_dir "input_dir1/ input_dir2/"`
+
 **OR**
 
 **b. Using Ollama open source models to run locally.**
 
 Follow steps here to download and run the model locally [github.com/ollama/ollama](https://github.com/ollama/ollama) 
 
-To Run, 
-
-`python3 androidmeda.py --llm_model gemini-1.5-flash -output_dir /tmp/ver/ -source_dir "input_dir1/ input_dir2/"`
-
-OR (For ollama models)
+To Run script, 
 
 `python3 androidmeda.py --llm_model llama3.2 -output_dir /tmp/ver/ -source_dir "input_dir1/ input_dir2/"`
 
