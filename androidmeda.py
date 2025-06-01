@@ -217,7 +217,7 @@ async def main(argv: Sequence[str]) -> None:
             print("No Vulnerability found to report")
 
         if (_SAVE_CODE.value):
-            print ("***** Final Processed code files created at" + _OUTPUT_DIR.value)
+            print ("***** Final Processed code files created at " + _OUTPUT_DIR.value)
     else:
         print("No java files found")
 
