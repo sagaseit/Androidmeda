@@ -11,9 +11,13 @@ import asyncio
 from collections import defaultdict
 from google.api_core.exceptions import ResourceExhausted
 import ollama
+import openai
+import anthropic
 
+_LLM_PROVIDER = flags.DEFINE_string(
+    'llm_provider', None, 'LLM Provider to use e.g. google, openai, anthropic, ollama')
 _LLM_MODEL = flags.DEFINE_string(
-    'llm_model', None, 'LLM Model to use')
+    'llm_model', None, 'LLM Model to use e.g gemini-2.0-flash, gpt-4.1')
 _OUTPUT_DIR = flags.DEFINE_string(
     'output_dir', None, 'the output directory to save the report and source code (if flag provided)')
 _SOURCE_DIR = flags.DEFINE_spaceseplist('source_dir', [], 'List of Directory of the Source code')
@@ -22,37 +26,51 @@ _SAVE_CODE = flags.DEFINE_boolean(
 _THREAD_SIZE = flags.DEFINE_integer(
     'thread_size',1, 'No. of threads to use for concurrent requests to Gemini')
 
-async def send_code_to_gemini(client,system_instructions,files_data):
-    
+async def send_code_to_llm(system_instructions, files_data, llm_client=None):
+    complete_prompt = system_instructions + "\n\n" + files_data
     retry_delay = 2  # Initial retry delay in seconds
     max_retries = 5  # Maximum number of retries
 
-    complete_prompt = system_instructions + "\n\n" + files_data
-
     for attempt in range(max_retries):
         try:
-            response_template =  await client.generate_content_async([complete_prompt,],
-            safety_settings={
-                HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT: HarmBlockThreshold.BLOCK_NONE,
-            }
-            )
-            return response_template.text
+            if "google" in _LLM_PROVIDER.value:
+                response_template = await llm_client.generate_content_async([complete_prompt,],
+                    safety_settings={
+                        HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT: HarmBlockThreshold.BLOCK_NONE,
+                    }
+                )
+                return response_template.text
+            elif "ollama" in _LLM_PROVIDER.value:
+                response = ollama.generate(model=_LLM_MODEL.value, format="json", prompt=complete_prompt)
+                return response.response
+            elif "openai" in _LLM_PROVIDER.value:
+                chat_completion = llm_client.chat.completions.create(
+                    messages=[
+                        {"role": "system", "content": system_instructions},
+                        {"role": "user", "content": files_data},
+                    ],
+                    model=_LLM_MODEL.value,
+                )
+                return chat_completion.choices[0].message.content
+            elif "anthropic" in _LLM_PROVIDER.value:
+                message = llm_client.messages.create(
+                    model=_LLM_MODEL.value,
+                    max_tokens=4096,
+                    system=system_instructions,
+                    messages=[
+                        {"role": "user", "content": files_data}
+                    ]
+                )
+                return message.content[0].text
         except ResourceExhausted as e:
             print(f"Rate limit error: {e}")
             print(f"Retrying in {retry_delay} seconds (attempt {attempt + 1}/{max_retries})...")
             await asyncio.sleep(retry_delay)
             retry_delay *= 2  # Exponential backoff
         except Exception as e:
-            print(f"Gemini API Error: {e}")
+            print(f"LLM API Error: {e}")
             traceback.print_exc()
             sys.exit()
-
-async def send_code_to_llm(system_instructions, files_data):
-    complete_prompt = system_instructions + "\n\n" + files_data
-    #print (complete_prompt)
-    response = ollama.generate(model=_LLM_MODEL.value, format="json", prompt=complete_prompt)
-    return response.response
-    
 
 output_data_lock = threading.Lock()
 output_data = defaultdict(list)
@@ -118,7 +136,7 @@ def read_file_content(file_path):
       content = file.read()+"\n\n"
     return content
 
-async def process_code_files(semaphore, file_path):
+async def process_code_files(semaphore, file_path, llm_client):
     
     async with semaphore:
         try:
@@ -127,29 +145,17 @@ async def process_code_files(semaphore, file_path):
             #Read the code file
             content = read_file_content(file_path)
 
-            #Send Input to Gemini or Ollama model
-            if "gemini" in _LLM_MODEL.value:
-                client = genai.GenerativeModel(_LLM_MODEL.value)
-                response =  await send_code_to_gemini(client,prompt_vuln,content)
-                process_response_vuln(response,file_path)
-                
-                # Sending instructions to deobfuscate code
-                if (_SAVE_CODE.value):
-                    response =  await send_code_to_gemini(client,prompt_deobfuscate, content)
-                    process_response_code(response,file_path,_OUTPUT_DIR.value)
-            else:
-                # Sending instructions to find vuln
-                response = await send_code_to_llm(prompt_vuln, content)
-                process_response_vuln(response,file_path)
-
-                # Sending instructions to deobfuscate code
-                if (_SAVE_CODE.value):
-                    response = await send_code_to_llm(prompt_deobfuscate, content)
-                    process_response_code(response,file_path,_OUTPUT_DIR.value)
+            # Sending instructions to find vuln
+            response = await send_code_to_llm(prompt_vuln, content, llm_client)
+            process_response_vuln(response, file_path)
+            
+            # Sending instructions to deobfuscate code
+            if (_SAVE_CODE.value):
+                response = await send_code_to_llm(prompt_deobfuscate, content, llm_client)
+                process_response_code(response, file_path, _OUTPUT_DIR.value)
         except Exception as e:
             print(f"Error processing file {file_path}: {e}")
             traceback.print_exc()
-            
 
 def write_vuln_output(output_vuln_dir):
     output_json = {}
@@ -168,11 +174,35 @@ async def main(argv: Sequence[str]) -> None:
             f'Usage: {argv[0]} -llm_model=<LLM Model to use> -output_dir=<output directory> -source_dir=<source directory>'
         )
     
-    if _LLM_MODEL.value in "gemini":
-        if os.environ['GEMINI_API_KEY'] is None:
-            raise app.UsageError(f'Usage: Set gemini_api_key in the environ variable')
-        else:
-            genai.configure(api_key=os.environ['GEMINI_API_KEY'])
+    llm_client = None
+    api_key = os.environ.get('API_KEY')
+
+    
+    if _LLM_PROVIDER.value is None:
+            raise app.UsageError(
+                f'Usage: Model provider is required'
+            )
+    elif "ollama" not in _LLM_PROVIDER.value: # Ollama does not require an API key
+        if api_key is None:
+            raise app.UsageError(
+                f'Usage: {_LLM_PROVIDER.value} model requires an API key. Please set the API_KEY environment variable.'
+            )
+    elif _LLM_MODEL.value is None:
+            raise app.UsageError(
+                f'Usage: Model name is required'
+            )
+    
+    if "google" in _LLM_PROVIDER.value:
+        genai.configure(api_key=api_key)
+        llm_client = genai.GenerativeModel(_LLM_MODEL.value)
+    elif "openai" in _LLM_PROVIDER.value:
+        llm_client = openai.OpenAI(api_key=api_key)
+    elif "anthropic" in _LLM_PROVIDER.value:
+        llm_client = anthropic.Anthropic(api_key=api_key)
+    elif "ollama" in _LLM_PROVIDER.value:
+        llm_client = None #We don't need to do anything
+    else:
+        raise ValueError(f"Unsupported LLM provider: {_LLM_PROVIDER.value}")
 
     semaphore = asyncio.Semaphore(_THREAD_SIZE.value)
     
@@ -199,7 +229,7 @@ async def main(argv: Sequence[str]) -> None:
     if (len(code_files) > 0):
         for file_path in code_files:
             task = asyncio.create_task(
-            process_code_files(semaphore, file_path)
+            process_code_files(semaphore, file_path, llm_client)
             )
             tasks.append(task)
 
