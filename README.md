@@ -60,11 +60,8 @@ To Run script,
 *-llm_provider* is the LLM provider of the model. e.g. google, anthropic, openaI, ollama 
 
 *-llm_model* is the LLM model to use, Gemini, Claude, ChatGPT are supported. You can get the model variants from here. 
-
 [google](https://ai.google.dev/gemini-api/docs/models/gemini#model-variations)
-
 [openai](https://docs.anthropic.com/en/docs/about-claude/models/overview#model-names)
-
 [anthropic](https://platform.openai.com/docs/models/)
 
 *-output_dir* is the output directory you want to save generated files.
