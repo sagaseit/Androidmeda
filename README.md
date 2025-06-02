@@ -1,6 +1,6 @@
 # Deobfuscate Android App
 
-LLM tool to find any potential security vulnerabilities in android apps and deobfuscate android app code. Supports Ollama models, as well as Google's Gemini public API. 
+LLM tool to find any potential security vulnerabilities in android apps and deobfuscate android app code. Supports Ollama local models, and Public APIs for Google's Gemini Model, Anthropic's Model and OpenAI's Model.
 
 Android apps generally use Proguard for obfuscating the app and reversing app can be hard with meaning less variable and function names. LLMs seems to do a good job in understanding the context of the code and renaming variables, functions, adding comments etc (to certain extent but embrace the unpredictibility of it too).
 
@@ -33,15 +33,17 @@ It will create a "resources" and "sources" directory. "Sources" directory is whe
 
 ### 4. Run the script 
 
-**a. Using Google's Gemini LLM Models.**
+**a. Using Google/Anthropic/OpenAI LLM Models.**
 
-`EXPORT GEMINI_API_KEY= "Your Gemini API Key"`
+`EXPORT API_KEY= "Your API Key"`
 
-You can get the API key from [ai.google.dev](https://ai.google.dev/)
+You can get the API key for Google [gemini](https://ai.google.dev/), OpenAI [chatgpt](https://platform.openai.com/settings/organization/api-keys), Anthropic [claude](https://console.anthropic.com/settings/keys)
 
 To Run script, 
 
-`python3 androidmeda.py --llm_model gemini-1.5-flash -output_dir /tmp/ver/ -source_dir "input_dir1/ input_dir2/"`
+Gemini - `python3 androidmeda.py --llm_provider google --llm_model gemini-1.5-flash -output_dir /tmp/ver/ -source_dir "input_dir1/ input_dir2/"`
+
+ChatGPT - `python3 androidmeda.py --llm_provider openai --llm_model gpt-4.1 -output_dir /tmp/ver/ -source_dir "input_dir1/ input_dir2/"`
 
 **OR**
 
@@ -51,11 +53,19 @@ Follow steps here to download and run the model locally [github.com/ollama/ollam
 
 To Run script, 
 
-`python3 androidmeda.py --llm_model llama3.2 -output_dir /tmp/ver/ -source_dir "input_dir1/ input_dir2/"`
+`python3 androidmeda.py --llm_provider ollama --llm_model llama3.2 -output_dir /tmp/ver/ -source_dir "input_dir1/ input_dir2/"`
 
 **Parameters -** 
 
-*-llm_model* is the LLM model to use, Currently only Google's Gemini is supported. You can get the model variants from here. https://ai.google.dev/gemini-api/docs/models/gemini#model-variations
+*-llm_provider* is the LLM provider of the model. e.g. google, anthropic, openaI, ollama 
+
+*-llm_model* is the LLM model to use, Gemini, Claude, ChatGPT are supported. You can get the model variants from here. 
+
+[google](https://ai.google.dev/gemini-api/docs/models/gemini#model-variations)
+
+[openai](https://docs.anthropic.com/en/docs/about-claude/models/overview#model-names)
+
+[anthropic](https://platform.openai.com/docs/models/)
 
 *-output_dir* is the output directory you want to save generated files.
 
