@@ -169,27 +169,25 @@ def write_vuln_output(output_vuln_dir):
 
 async def main(argv: Sequence[str]) -> None:
     flags.FLAGS(argv)
-    if _LLM_MODEL.value is None or _OUTPUT_DIR.value is None or  len(_SOURCE_DIR.value) == 0:
+    if _OUTPUT_DIR.value is None or  len(_SOURCE_DIR.value) == 0:
         raise app.UsageError(
-            f'Usage: {argv[0]} -llm_model=<LLM Model to use> -output_dir=<output directory> -source_dir=<source directory>'
+            f'Usage: {argv[0]} -llm_model=<LLM Provider> -llm_model=<LLM Model to use> -output_dir=<output directory> -source_dir=<source directory>'
         )
     
     llm_client = None
     api_key = os.environ.get('API_KEY')
-
     
     if _LLM_PROVIDER.value is None:
-            raise app.UsageError(
-                f'Usage: Model provider is required'
+        raise app.UsageError(
+                f'Usage: Model provider is required e.g google, anthropic, openai, ollama'
             )
-    elif "ollama" not in _LLM_PROVIDER.value: # Ollama does not require an API key
-        if api_key is None:
-            raise app.UsageError(
+    elif "ollama" not in _LLM_PROVIDER.value and api_key is None: # Ollama does not require an API key
+        raise app.UsageError(
                 f'Usage: {_LLM_PROVIDER.value} model requires an API key. Please set the API_KEY environment variable.'
             )
     elif _LLM_MODEL.value is None:
-            raise app.UsageError(
-                f'Usage: Model name is required'
+        raise app.UsageError(
+                f'Usage: Model name is required e.g gemini-1.5-flash, gpt-4.1, llama3.2'
             )
     
     if "google" in _LLM_PROVIDER.value:
