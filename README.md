@@ -1,4 +1,4 @@
-# Deobfuscate Android App
+# Androidmeda
 
 LLM tool to find any potential security vulnerabilities in android apps and deobfuscate android app code. Supports Ollama local models, and Public APIs for Google's Gemini Model, Anthropic's Model and OpenAI's Model.
 
