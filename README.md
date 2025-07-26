@@ -1,8 +1,10 @@
 # Androidmeda
 
-LLM tool to find any potential security vulnerabilities in android apps and deobfuscate android app code. Supports Ollama local models, and Public APIs for Google's Gemini Model, Anthropic's Model and OpenAI's Model.
+Androidmeda is an LLM tool designed to deobfuscate Android application code and find vulnerabilities by leveraging the power of Large Language Models (LLMs). It analyzes decompiled Android source code to identify obfuscated patterns, suggest more readable names for variables, methods, and classes, and ultimately provide a clearer understanding of an application's logic. 
 
-Android apps generally use Proguard for obfuscating the app and reversing app can be hard with meaning less variable and function names. LLMs seems to do a good job in understanding the context of the code and renaming variables, functions, adding comments etc (to certain extent but embrace the unpredictibility of it too).
+Android apps generally use Proguard for obfuscating the app and reversing app can be hard with meaning less variable and function names. LLMs seems to do a good job in understanding the context of the code and renaming variables, functions, adding comments etc. (to certain extent but embrace the unpredictibility of it too).
+
+Androidmeda supports both cloud-based LLM APIs (like OpenAI, Gemini, Anthropic) and local LLM inference via Ollama, offering flexibility and control over your analysis environment.
 
 ## Citation
 Please cite, If you use this software in your Research papers, articles etc.
@@ -18,15 +20,21 @@ year = {2024}
 }
 ```
 
+## Features
+
+* **LLM-Powered Deobfuscation:** Utilizes advanced LLMs to intelligently deobfuscate code elements and add helpful comments. 
+* **Local Model Support:** Seamless integration with local LLMs via Ollama for privacy-focused and cost-effective analysis.
+* **API Model Support:** Compatibility with popular LLM APIs for broader model access.
+* **Vulnerability Reporting:** Generates reports highlighting potential vulnerabilities found during the analysis.
+
 ## Description
 
 Input - Takes decompiled code directory as an input.
 
 Output -
 
-1) a JSON file will be created with name "vuln_report", listing security risk and its impact in the provided output directory.
-
-2) Deobfuscates each file for easier readability and save it in package directory structure for manual reviews. Also, labels any security issues seen in the generated code with #SECURITY-ISSUE. (Only when save_code parameter is set to True, read below in run the script section)
+1) * **Vulnerability Report:** A JSON file with name "vuln_report" summarizing identified vulnerabilities.
+2) * **Deobfuscated Code:** If `--save_code true` was used, Deobfuscates each file for easier readability and save it in package directory structure for manual reviews. Additionally, labels any security issues seen in the generated code with #SECURITY-ISSUE.
 
 ## Installation
 
@@ -103,6 +111,15 @@ Security Issues identified by LLM
 ## Contributing
 
 See [`CONTRIBUTING.md`](docs/CONTRIBUTING.md) for details.
+
+We welcome contributions to Androidmeda! If you have suggestions for improvements, bug fixes, or new features, please follow these steps:
+
+1.  Fork the repository.
+2.  Create a new branch (`git checkout -b feature/your-feature-name`).
+3.  Make your changes.
+4.  Commit your changes (`git commit -m 'Add new feature'`).
+5.  Push to the branch (`git push origin feature/your-feature-name`).
+6.  Open a Pull Request.
 
 ## License
 
