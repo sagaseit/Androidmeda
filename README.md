@@ -61,7 +61,7 @@ It will create a "resources" and "sources" directory. "Sources" directory is whe
 
 You can get the API key for Google [gemini](https://ai.google.dev/), OpenAI [chatgpt](https://platform.openai.com/settings/organization/api-keys), Anthropic [claude](https://console.anthropic.com/settings/keys)
 
-To Run script, 
+To Run script with Public LLM APIs, 
 
 Gemini - `python3 androidmeda.py --llm_provider google --llm_model gemini-1.5-flash -output_dir /tmp/ver/ -source_dir "input_dir1/ input_dir2/"`
 
@@ -73,7 +73,13 @@ ChatGPT - `python3 androidmeda.py --llm_provider openai --llm_model gpt-4.1 -out
 
 Follow steps here to download and run the model locally [github.com/ollama/ollama](https://github.com/ollama/ollama) 
 
-To Run script, 
+* **Warning: Resource Intensity!** LLM models are large (several GBs) and require significant RAM.
+  * **7B models (e.g., `llama3`, `mistral`):** Minimum 8GB RAM, 16GB recommended.
+  * **13B models:** Minimum 16GB RAM, 32GB recommended.
+  * **33B models:** Minimum 32GB RAM, 64GB recommended.
+  Ensure your system (or WSL instance) has sufficient free memory.
+
+To Run script with Ollama, 
 
 `python3 androidmeda.py --llm_provider ollama --llm_model llama3.2 -output_dir /tmp/ver/ -source_dir "input_dir1/ input_dir2/"`
 
