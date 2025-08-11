@@ -19,7 +19,6 @@ Intent Redirection or Intent URI Manipulation. For example - Allowing external a
 Path Traversal. For example - Accessing files outside the intended directory.
 ------- | --------
 
-
 Now, Generate a JSON output with the following structure:
 ```json
 {
@@ -36,15 +35,84 @@ Now, Generate a JSON output with the following structure:
     }
   ]
 }
-```
 
 Output Instructions:
 - Strictly adhere to the provided JSON schema.
 - Do not add any explanation or text before or after the JSON object.
 - The Output is a JSON object represented in a JSON code block. "Vulnerabilities" key is an array of object for the security vulnerabilities identified where,
-  * "Vulnerability Type" key will contain the type or category of vulnerability identified as the value.
-  * "Vulnerable Code" key will contain the specific vulnerable code snippet and the line number of the vulnerable code  as the value. 
-  * "Vulnerability Impact" key will contain brief explanation of the vulnerability and its potential Impact as the value.
-- If you don't see any vulnerabilities in the code given to you, it will be an empty response.
-- Please ensure the output and the special characters are properly escaped for JSON encoding and that the JSON is parsable by a JSON parser. Especially 
-escape every double quotes in the output.
+  - "Vulnerability Type" key will contain the type or category of vulnerability identified as the value.
+  - "Vulnerable Code" key will contain the specific vulnerable code snippet and the line number of the vulnerable code as the value.
+  - "Vulnerability Impact" key will contain brief explanation of the vulnerability and its potential Impact as the value.
+- If you don't see any vulnerabilities in the code given to you, it will be an empty response
+- Please ensure the output and the special characters are properly escaped for JSON encoding and that the JSON is parsable by a JSON parser. Especially escape every double quotes in the output.
+
+--- ADDITIONS (do not delete anything above; only follow and supplement below) ---
+
+Scope & Inputs:
+- You may receive Java, Kotlin, or smali code and the AndroidManifest.xml. Treat smali line numbers or decompiler line numbers as authoritative where present. If line numbers are absent, count lines in the provided snippet and mark them clearly (e.g., L12).
+- Analyze both code and manifest. Consider cross-file flows (e.g., Intent extra → file path → file write).
+- Assume obfuscation: class and method names may be short or meaningless; rely on APIs, flags, and call patterns.
+
+Evidence Requirements:
+- Report ONLY issues supported by concrete code evidence. Do not speculate.
+- For each finding, include:
+  - The exact class name, method signature, and (if known) file or component (e.g., provider authority).
+  - The minimal vulnerable snippet with the exact line number(s) visible in the decompiled vi
+  - Enough surrounding context to understand data flow (one or two lines above/below if needed).
+
+OWASP Mobile Top 10 Mapping:
+- In "Vulnerability Type", include the OWASP Mobile category tag (e.g., "M1: Improper Credential Usage", "M3: Insecure Communication", etc.) alongside the specific issue (e.g., "Trust-all SSL").
+- Keep the JSON schema unchanged; embed the category tag inside the string value.
+
+Android-Specific Checks (non-exhaustive, prioritize these when present):
+- Manifest & Components:
+  - android:exported="true" on activities/services/providers/receivers reachable without permissions.
+  - Intent filters that allow external triggering; missing signature permissions; misuse of grantUriPermissions, exported ContentProviders, pathPattern/pathPrefix that overexpose fil
+  - android:debuggable="true", android:allowBackup="true", usesCleartextTraffic="true", backup rules that include sensitive da
+  - FileProvider misconfiguration (overly broad paths) and world-readable/writable files (including legacy MODE_WORLD_*).
+
+- IPC & Intents:
+  - StartActivity/Service with unvalidated data from Intent extras; Intent redirection; PendingIntent without FLAG_IMMUTABLE or with mutable when not necessary.
+  - setComponent / setClassName from untrusted input; implicit intents leading to data leakage.
+
+- WebView & JavaScript:
+  - setJavaScriptEnabled(true) plus addJavascriptInterface on SDK < 17 or unsafe objects.
+  - loadUrl/shouldOverrideUrlLoading that accepts untrusted schemes (file://, javascript:) or enables universal access from file URLs.
+- Networking & TLS:
+  - Custom TrustManager/HostnameVerifier that accepts all certs/hosts; SSLSocketFactory/OkHttp client with certificate pinning disabled; cleartext HTTP endpoints.
+- Cryptography:
+  - AES/ECB mode, static or zero IVs, constant salts, weak KDF params (e.g., PBKDF2 iterations too low), hardcoded keys/keystore misuse.
+- Storage & Files:
+  - Sensitive data in SharedPreferences, databases, or external storage without encryption; world-readable files; logs containing secret
+  -  Path traversal via File, openFile, or ContentProvider document paths using unvalidated input.
+Injection:
+  - rawQuery/execSQL string concatenation; Runtime.exec using untrusted input; WebView JS injection via loadData/loadUrl.
+- Privacy & Leakage:
+  - Copying secrets to clipboard; verbose Log.d/e with credentials, tokens, or PII.
+- Severity & Impact (without changing JSON keys):
+  - In "Vulnerability Impact", prepend a severity tag and brief exploit path, for example: "High — External app can start ExportedService and read token via binder → privilege escalation."
+  - When relevant, note preconditions (e.g., attacker needs another app installed) and likely attacker value (e.g., credential theft, RCE, data exfiltration).
+
+- Line Numbers & Context Rules:
+  - Always show the exact line numbers available in the snippet (e.g., "MyClass.java:L85–L90").
+  - If only smali is available, include method and instruction lines (e.g., ".method public onCreate ... .line 123 invoke-virtual ...").
+
+- Output Rules (reinforced):
+  - Output must be exactly one JSON object inside a code block, no extra commentary.
+  - When no issues are found, output exactly:
+      {"Vulnerabilities":[]}
+  - Escape every double quote inside string values so the JSON is valid.
+- Quality Bar:
+  - Prefer fewer, high-confidence findings over many speculative ones.
+  - Each finding must include: exact vulnerable lines, concrete exploit narrative, and clear OWASP mapping.
+
+Example (format illustration only; replace with actual app evidence when analyzing):
+{
+  "Vulnerabilities": [
+    {
+      "Vulnerability Type": "M3: Insecure Communication — Trust-all HostnameVerifier",
+      "Vulnerable Code": "OkHttpClient client = new OkHttpClient.Builder()\\n    .hostnameVerifier((hostname, session) -> true)\\n    .build(); // NetworkClient.java:L142-L145",
+      "Vulnerability Impact": "High — Man-in-the-middle can intercept HTTPS and read/modify traffic; credentials and tokens are exposed on hostile networks."
+    }
+  ]
+}
